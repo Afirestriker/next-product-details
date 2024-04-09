@@ -20,7 +20,7 @@ const calculateFinalPrice = (originalPrice, discountPercentage) => {
 const DiscountPrice = ({discountPercentage, price}) => {
     return (
         <>
-            <h5 className="my-3">
+            <h5 className="my-2">
                 <strong className="text-danger">
                     - {discountPercentage ?? 0} &#37;
                 </strong>

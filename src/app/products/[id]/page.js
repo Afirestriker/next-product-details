@@ -1,58 +1,69 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ImageCarousel from "@/app/components/ImageCarousel";
 import StarRating from "@/app/components/StarRating";
 import DiscountPrice from "@/app/components/DiscountPrice";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 
-const ProductInfo = async ({ params }) => {
-    const productId = params.id;
-    const response = await fetch(`https://dummyjson.com/products/${productId}`);
-    const data = await response.json();
+const ProductInfo = ({ params }) => {
+    const [product, setProduct] = useState({});
+
+    const fetchProduct = async () => {
+        const response = await fetch(`https://dummyjson.com/products/${params.id}`);
+        const data = await response.json();
+
+        setProduct(data);
+    }
+
+    useEffect(() => {
+        fetchProduct();
+    }, []);
 
     if (
-        typeof data == "undefined" ||
-        (typeof data == "object" && !Object.keys(data).length)
+        typeof product == "undefined" ||
+        (typeof product == "object" && !Object.keys(product).length)
     ) {
         return (
-            <>
-                <div className="alert alert-danger" role="alert">
-                    Product Details Not Found! Please try again later.
-                </div>
-            </>
+            <div className="alert alert-success" role="alert">
+                Fetching Product Details! Please wait...
+            </div>
         );
     }
 
     return (
-        <div className="m-3">
+        <div>
             <div className="d-flex">
-                <Link href="/products" className="h3 text-primary" title="View all products"><IoIosArrowDropleftCircle /></Link>
-                <h2>{data.brand}</h2>
+                <Link href="/products" className="h3 text-primary me-1" title="View all products"><IoIosArrowDropleftCircle /></Link>
+                <h2>{product.brand}</h2>
             </div>
-            <p className="display-6">{data.category[0].toUpperCase()}{data.category.substring(1)}</p>
+
+            <p className="display-6">{product.category[0].toUpperCase()}{product.category.substring(1)}</p>
+
             <div>
-                <ImageCarousel title={data.title} images={data.images} />
+                {/* image carousel */}
+                <ImageCarousel title={product.title} images={product.images} />
 
-                <div>
-                    <h2>{data.title}</h2>
+                <h2 className="m-0">{product.title}</h2>
 
-                    {/* rating */}
-                    <StarRating value={data.rating} />
+                {/* rating */}
+                <StarRating value={product.rating} />
 
-                    {/* discount price */}
-                    <DiscountPrice discountPercentage={data.discountPercentage} price={data.price} />
+                {/* discount price */}
+                <DiscountPrice discountPercentage={product.discountPercentage} price={product.price} />
 
-                    {/* actual price */}
-                    <p>
-                        M.R.P &nbsp;
-                        <strong>
-                            <sup>&#8377;</sup>
-                            <del>{data.price}</del>
-                        </strong>
-                    </p>
+                {/* actual price */}
+                <p>
+                    M.R.P &nbsp;
+                    <strong>
+                        <sup>&#8377;</sup>
+                        <del>{product.price}</del>
+                    </strong>
+                </p>
 
-                    {/* description */}
-                    <p>{data.description}</p>
-                </div>
+                {/* description */}
+                <p>{product.description}</p>
             </div>
         </div>
     );

@@ -8,9 +8,9 @@ const ImageCarousel = (props) => {
         <Carousel
             useKeyboardArrows={true}
         >
-            {props.images.map((image) => {
+            {props.images.map((image, indx) => {
                 return (
-                    <div>
+                    <div key={indx}>
                         <Image src={image} alt={props.title} width={600} height={500} objectFit='contain' />
                     </div>
                 );
